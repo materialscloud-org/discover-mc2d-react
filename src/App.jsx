@@ -1,23 +1,21 @@
 import "./App.css";
 
-import MaterialsCloudHeader from "mc-react-header";
+import { Routes, Route, HashRouter } from "react-router-dom";
+
+import MainPage from "./MainPage";
 
 function App() {
   return (
-    <MaterialsCloudHeader
-      activeSection={"discover"}
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        {
-          name: "Materials Cloud two-dimensional crystals database",
-          link: null,
-        },
-      ]}
-    >
-      <div className="App">
-        mc2d
-      </div>
-    </MaterialsCloudHeader>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        {/* <Route path="/details/:compound" element={<DetailPage />} /> */}
+        {/* <Route
+          path="/details/:compound/:id/:functional"
+          element={<DetailPage />}
+        /> */}
+      </Routes>
+    </HashRouter>
   );
 }
 

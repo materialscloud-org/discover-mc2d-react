@@ -1,0 +1,11 @@
+.citationbox-container {
+  border: 2px solid #d6d6d6;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 5px;
+  background-color: rgb(250, 250, 250);
+}
+
+.citationbox-extras {
+  margin-left: 10px;
+}
