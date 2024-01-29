@@ -91,6 +91,7 @@ function columns(info) {
       colType: "formula",
       infoText:
         "Chemical formula for the 3D parent (lowest energy parent, if multiple exist).",
+      hide: true,
     },
     {
       field: "parent_spg",
@@ -98,6 +99,7 @@ function columns(info) {
       colType: "spg_symbol",
       infoText:
         "Space group for the 3D parent (lowest energy parent, if multiple exist).",
+      hide: true,
       width: 120,
     },
     {
@@ -106,6 +108,7 @@ function columns(info) {
       colType: "text",
       infoText:
         "Source database for the 3D parent (lowest energy parent, if multiple exist).",
+      hide: true,
       width: 120,
     },
     {
@@ -114,6 +117,7 @@ function columns(info) {
       colType: "text",
       infoText:
         "Source database ID for the 3D parent (lowest energy parent, if multiple exist).",
+      hide: true,
       width: 120,
     },
   ];
@@ -158,8 +162,8 @@ function formatRows(entries) {
       band_gap: comp["band_gap"],
       abundance: comp["abundance"],
       mag_state: comp["mag_state"],
-      df2_c09: comp["df2_c09"], // convert to meV/Å^2
-      rvv10: comp["rvv10"] * 1000, // convert to meV/Å^2
+      df2_c09: comp["df2_c09"] !== null ? comp["df2_c09"] * 1000 : null, // convert to meV/Å^2
+      rvv10: comp["rvv10"] !== null ? comp["rvv10"] * 1000 : null, // convert to meV/Å^2
       parent_formula: comp["parent"]["formula"],
       parent_spg: comp["parent"]["spg"],
       parent_source_db: comp["parent"]["source_db"],
