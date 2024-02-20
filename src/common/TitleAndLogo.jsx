@@ -4,7 +4,7 @@ import "./TitleAndLogo.css";
 
 import Mc2dLogo from "../assets/mc2d.png";
 
-import DoiBadge from "./DoiBadge";
+import { DoiBadge } from "mc-react-library";
 
 export default function TitleAndLogo() {
   return (

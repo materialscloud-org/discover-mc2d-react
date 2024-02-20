@@ -57,7 +57,7 @@ function columns(info) {
       headerName: "Abundance",
       colType: "float",
       infoText:
-        "Abundance on the Earth of the rarest of the elements present in the compound.",
+        "Abundance on the Earth of the rarest of the elements present in the compound (mass fraction).",
       width: 120,
     },
     {
@@ -153,9 +153,10 @@ function formatRows(entries) {
   Object.keys(entries).forEach((i) => {
     let comp = entries[i];
     let elemArr = calcElementArray(comp["formula"]);
+    let mc2d_id = `mc2d-${i}`;
 
     let row = {
-      id: `mc2d-${i}`,
+      id: mc2d_id,
       formula: comp["formula"],
       prototype: comp["prototype"],
       point_group: comp["point_group"],
@@ -171,7 +172,7 @@ function formatRows(entries) {
       n_elem: elemArr.length,
       elem_array: elemArr,
       n_atoms: countNumberOfAtoms(comp["formula"]),
-      href: `test`,
+      href: `${import.meta.env.BASE_URL}/#/details/${comp["formula"]}/${mc2d_id}`,
     };
     rows.push(row);
   });

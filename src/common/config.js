@@ -9,3 +9,5 @@
 export const REST_API_COMPOUNDS =
   "https://dev-www.materialscloud.org/mcloud/api/v2/discover/mc2d/compounds";
 export const REST_API_AIIDA = "https://aiida.materialscloud.org/mc2d/api/v4";
+
+export const EXPLORE_URL = "https://www.materialscloud.org/explore/mc2d";

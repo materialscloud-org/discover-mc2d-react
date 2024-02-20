@@ -46,9 +46,12 @@ function MainPage() {
             those that can be computationally exfoliated producing 2D materials
             candidates.
           </div>
-          <Tabs defaultActiveKey="use" className="mc3d-tabs">
+          <Tabs defaultActiveKey="use" className="main-tabs">
             <Tab eventKey="use" title="Use">
-              <div className="description">Search for materials:</div>
+              <div className="description">
+                Search for materials by filtering based on the periodic table
+                and the columns of the table below:
+              </div>
               <MaterialSelector columns={columns} rows={rows} />
             </Tab>
             <Tab eventKey="about" title="About">
