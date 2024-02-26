@@ -19,6 +19,7 @@ import { McloudSpinner } from "mc-react-library";
 
 import OverviewSection from "./OverviewSection";
 import SelectionSection from "./SelectionSection";
+import BandsSection from "./BandsSection";
 
 async function fetchCompoundData(compound, id) {
   // 1. fetch the compound data from MC Rest API:
@@ -105,6 +106,7 @@ function DetailPage() {
                 cifText={structureCifText}
                 compoundInfo={compoundInfo}
               />
+              <BandsSection compoundInfo={compoundInfo} />
             </>
           )}
         </div>
