@@ -106,7 +106,7 @@ function OverviewSection(props) {
               uuid={props.compoundInfo.structure_2D}
             />
           </div>
-          <StructureVisualizer cifText={props.cifText} />
+          <StructureVisualizer cifText={props.cifText} initSupercell={[3, 3, 1]} />
           <div className="download-button-container">
             <StructDownloadButton
               aiida_rest_url="https://aiida.materialscloud.org/mc2d/api/v4"
