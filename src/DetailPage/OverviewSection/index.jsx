@@ -13,6 +13,13 @@ import {
 
 import { EXPLORE_URL } from "../../common/config";
 
+function floatFormatter(val, prec = 1) {
+  if (val >= 1e5 || (val < 0.01 && val !== 0)) {
+    return val.toExponential(prec);
+  }
+  return val.toFixed(prec);
+}
+
 function InfoBox(props) {
   let info = props.compoundInfo;
 
@@ -38,7 +45,7 @@ function InfoBox(props) {
           <li>Space group: {formatSpaceGroupSymbol(info["space_group"])}</li>
           <li>Point group: {formatSpaceGroupSymbol(info["point_group"])}</li>
           <li>Prototype: {formatChemicalFormula(info["prototype"])}</li>
-          <li>Abundance: {info["abundance"]}</li>
+          <li>Abundance: {floatFormatter(info["abundance"])}</li>
           <li>Band gap: {format_aiida_prop("band_gap", "eV")}</li>
         </ul>
       </div>
@@ -102,11 +109,14 @@ function OverviewSection(props) {
           <div className="subsection-title-container">
             <b>Structure</b>{" "}
             <ExploreButton
-              explore_url="https://www.materialscloud.org/explore/mc2d"
+              explore_url={EXPLORE_URL}
               uuid={props.compoundInfo.structure_2D}
             />
           </div>
-          <StructureVisualizer cifText={props.cifText} initSupercell={[3, 3, 1]} />
+          <StructureVisualizer
+            cifText={props.cifText}
+            initSupercell={[3, 3, 1]}
+          />
           <div className="download-button-container">
             <StructDownloadButton
               aiida_rest_url="https://aiida.materialscloud.org/mc2d/api/v4"

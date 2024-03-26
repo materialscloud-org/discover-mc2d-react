@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 
 import BandsVisualizer from "mc-react-bands";
 
-import { fetchAiidaAttributes } from "../../common/utils.jsx";
+import { ExploreButton } from "mc-react-library";
+
+import { EXPLORE_URL } from "../../common/config";
 import { REST_API_AIIDA } from "../../common/config.js";
 
 /**
@@ -53,7 +55,8 @@ function BandsSection(props) {
 
   return (
     <div>
-      <b>Bands</b>
+      <b>Electronic band structure</b>{" "}
+      <ExploreButton explore_url={EXPLORE_URL} uuid={bands_uuid} />
       {loading ? (
         <span>loading</span>
       ) : (
