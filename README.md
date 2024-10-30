@@ -11,8 +11,23 @@ For local development:
 > npm run dev
 ```
 
-To publish the local version to GitHub pages:
+To build an optimized package, use
 
 ```
-> npm run deploy
+> npm run build
 ```
+
+Preview locally with
+
+```
+> npm run preview
+```
+
+## Branches and deployment
+
+The following branches are automatically deployed via Github actions in the following manner:
+
+- `main`
+  - deployed to https://materialscloud-org.github.io/discover-mc2d-react/
+- `develop`
+  - deployed to https://materialscloud-org.github.io/discover-mc2d-react/develop

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import "./index.css";
 
@@ -8,13 +8,14 @@ import MaterialSelector from "mc-react-ptable-materials-grid";
 
 import TitleAndLogo from "../common/TitleAndLogo";
 
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
+import { Container, Tab, Tabs, Form } from "react-bootstrap";
 
 import { aboutText } from "./about";
 import { restapiText } from "./restapiText";
 
 import { loadIndexMc2d } from "./loadIndexMc2d";
+
+import { DownloadButton } from "./DownloadButton.jsx";
 
 function MainPage() {
   const [columns, setColumns] = useState([]);
@@ -27,6 +28,8 @@ function MainPage() {
     });
   }, []);
 
+  const materialSelectorRef = useRef(null);
+
   return (
     <MaterialsCloudHeader
       activeSection={"discover"}
@@ -38,31 +41,39 @@ function MainPage() {
         },
       ]}
     >
-      <div className="App">
-        <div className="main-page">
-          <TitleAndLogo />
-          <div className="description">
-            Results from screening most known 3D crystal structures finding
-            those that can be computationally exfoliated producing 2D materials
-            candidates.
-          </div>
-          <Tabs defaultActiveKey="use" className="main-tabs">
-            <Tab eventKey="use" title="Use">
-              <div className="description">
+      <Container fluid="xxl">
+        <TitleAndLogo />
+        <div className="description">
+          Materials Cloud 2D crystals database is a curated set of 2D materials
+          obtained by screening most known 3D crystal structures by a
+          computational exfoliation procedure. This database contains the
+          relaxed 2D materials and their various properties.
+        </div>
+        <Tabs defaultActiveKey="use" className="main-tabs">
+          <Tab eventKey="use" title="Use">
+            {/* <div className="description">
                 Search for materials by filtering based on the periodic table
                 and the columns of the table below:
-              </div>
-              <MaterialSelector columns={columns} rows={rows} />
-            </Tab>
-            <Tab eventKey="about" title="About">
-              {aboutText}
-            </Tab>
-            <Tab eventKey="rest" title="REST API">
-              {restapiText}
-            </Tab>
-          </Tabs>
-        </div>
-      </div>
+              </div> */}
+            <div style={{ marginTop: "20px" }}></div>
+            <MaterialSelector
+              ref={materialSelectorRef}
+              columns={columns}
+              rows={rows}
+            />
+            <DownloadButton
+              materialSelectorRef={materialSelectorRef}
+              disabled={rows.length == 0}
+            />
+          </Tab>
+          <Tab eventKey="about" title="About">
+            {aboutText}
+          </Tab>
+          <Tab eventKey="rest" title="REST API">
+            {restapiText}
+          </Tab>
+        </Tabs>
+      </Container>
     </MaterialsCloudHeader>
   );
 }

@@ -1,193 +1,220 @@
-import { REST_API_COMPOUNDS } from "../common/config";
+import { loadIndex, loadMetadata } from "../common/restApiUtils";
 
-/* The MaterialsSelector needs two inputs:
- 1) column definitions
- 2) async function that loads data
+import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
 
- The data needs to be an array of row objects, whereas each row needs contain
- * entries for all the columns, with the key matching the 'field' string of the column.
- * 'elem_array', which is used in the periodic table filtering.
- */
+import { getSymmetryInfo } from "mc-react-library";
 
-/* Define the columns
- some columns are special: id, formula (see the implementation)
- * colType: "text", "integer", "float" - defines formatting & filters
- * hide: true if the column is hidden initially
- any additional input is passed to ag-grid column definitions (e.g. width) 
- */
-function columns(info) {
-  return [
+// Order the columns and define which ones to show by default
+// refer to the label/field of the column
+// columns not listed, will be not shown by default and placed at the bottom
+const COLUMN_ORDER_AND_SETTINGS = [
+  { field: "id", hide: false, width: 120 },
+  { field: "formula", hide: false },
+  { field: "num_elements", hide: false },
+  { field: "num_atoms", hide: true },
+  { field: "prototype", hide: false },
+  { field: "space_group_number", hide: false },
+  { field: "space_group_int", hide: true },
+  { field: "band_gap", hide: false },
+  { field: "abundance", hide: false },
+  { field: "magnetic_state", hide: true },
+  { field: "total_magnetization", hide: true, minWidth: 130 },
+  { field: "absolute_magnetization", hide: true, minWidth: 130 },
+  { field: "binding_energy_df2", hide: false, minWidth: 140 },
+  { field: "binding_energy_rvv10", hide: false },
+  { field: "parent_formula", hide: false },
+  { field: "parent_space_group_number", hide: true },
+  { field: "parent_source_db", hide: false },
+  { field: "parent_source_db_id", hide: false },
+];
+
+const FRONTEND_COLUMNS = [
+  {
+    columnDef: {
+      field: "num_elements",
+      headerName: "Number of elements",
+      colType: "integer",
+    },
+    calcFunc: (entry) => countNumberOfElements(entry["formula"]),
+  },
+  {
+    columnDef: {
+      field: "num_atoms",
+      headerName: "Num. of atoms/cell",
+      colType: "integer",
+    },
+    calcFunc: (entry) => countNumberOfAtoms(entry["formula"]),
+  },
+  // {
+  //   columnDef: {
+  //     field: "bravais_lat",
+  //     headerName: "Bravais lattice",
+  //     colType: "text",
+  //     infoText: "Bravais lattice in Pearson notation.",
+  //   },
+  //   calcFunc: (entry) => getSymmetryInfo(entry["sg"]).bravais_lattice_pearson,
+  // },
+  {
+    columnDef: {
+      field: "space_group_int",
+      headerName: "Space group international",
+      colType: "spg_symbol",
+      infoText: "International short symbol for the space group.",
+    },
+    calcFunc: (entry) => getSymmetryInfo(entry["sg"]).space_group_symbol,
+  },
+];
+
+function formatColumns(metadata) {
+  /*
+  The column definitions of the MaterialsSelector need to follow the format of
+  
+  {
+    field: str,        // Internal label for the column
+    headerName: str,   // Column title displayed in header
+    unit: str,         // unit displayed in header
+    colType: str,      // type that determines formatting & filtering, see below
+    infoText: str,     // info text in the header menu
+    hide: bool,        // whether to hide the column by default
+  },
+
+  Possible colTypes:
+    * "id" - always on the left; and href to the detail page;
+    * "formula" - special formatting with subscripts
+    * "spg_symbol" - special formatting
+    * "text"
+    * "integer"
+    * "float"
+    * ...
+  */
+  let columns = [
     {
       field: "id",
       headerName: "ID",
       colType: "id",
-      infoText: "The unique MC2D identifier of each structure.",
-      width: 100,
-    },
-    {
-      field: "formula",
-      headerName: "Formula",
-      colType: "formula",
-      infoText: "The full formula in Hill notation.",
-    },
-    {
-      field: "prototype",
-      headerName: "Prototype",
-      colType: "text",
-      infoText: "Prototype structure.",
-      width: 140,
-    },
-    {
-      field: "point_group",
-      headerName: "Point group",
-      colType: "text",
-      infoText: "The point group symmetry of the material.",
-      width: 100,
-    },
-    {
-      field: "band_gap",
-      headerName: "Band gap",
-      colType: "float",
-      infoText: "Band gap of the 2D material.",
-      unit: "eV",
-      width: 110,
-    },
-    {
-      field: "abundance",
-      headerName: "Abundance",
-      colType: "float",
-      infoText:
-        "Abundance on the Earth of the rarest of the elements present in the compound (mass fraction).",
-      width: 120,
-    },
-    {
-      field: "mag_state",
-      headerName: "Magnetic state",
-      colType: "text",
-      infoText: "Magnetic state",
-      width: 110,
-    },
-    {
-      field: "df2_c09",
-      headerName: "E(bind) DF2-C09",
-      colType: "float",
-      infoText:
-        "Binding energy of the bulk 3D, per 2D layer and per unit area, obtained with the vdw-DF2-C09 functional.",
-      unit: "meV/Å²",
-      width: 115,
-    },
-    {
-      field: "rvv10",
-      headerName: "E(bind) rVV10",
-      colType: "float",
-      infoText:
-        "Binding energy of the bulk 3D, per 2D layer and per unit area, obtained with the vdw-rVV10 functional.",
-      unit: "meV/Å²",
-      width: 115,
-    },
-    {
-      field: "parent_formula",
-      headerName: "3D parent formula",
-      colType: "formula",
-      infoText:
-        "Chemical formula for the 3D parent (lowest energy parent, if multiple exist).",
-      hide: true,
-    },
-    {
-      field: "parent_spg",
-      headerName: "3D parent space group",
-      colType: "spg_symbol",
-      infoText:
-        "Space group for the 3D parent (lowest energy parent, if multiple exist).",
-      hide: true,
-      width: 120,
-    },
-    {
-      field: "parent_source_db",
-      headerName: "3D parent source DB",
-      colType: "text",
-      infoText:
-        "Source database for the 3D parent (lowest energy parent, if multiple exist).",
-      hide: true,
-      width: 120,
-    },
-    {
-      field: "parent_source_id",
-      headerName: "3D parent source ID",
-      colType: "text",
-      infoText:
-        "Source database ID for the 3D parent (lowest energy parent, if multiple exist).",
-      hide: true,
-      width: 120,
+      infoText: "The unique MC3D identifier of each structure.",
     },
   ];
-}
 
-function calcElementArray(formula) {
-  var formula_no_numbers = formula.replace(/[0-9]/g, "");
-  var elements = formula_no_numbers.split(/(?=[A-Z])/);
-  return elements;
-}
-
-function countNumberOfAtoms(formula) {
-  // split on capital letters to get element+number strings
-  var elnum = formula.split(/(?=[A-Z])/);
-  var num = 0;
-  elnum.forEach((v) => {
-    let match = v.match(/\d+/);
-    let n = match == null ? 1 : parseInt(match[0]);
-    num += n;
+  // convert the columns from metadata
+  metadata["index-columns"].forEach((col) => {
+    columns.push({
+      field: col.label,
+      headerName: col.name,
+      unit: col.unit || null,
+      colType: col.type || "text",
+      infoText: col.description || null,
+    });
   });
-  return num;
+
+  // Add frontend columns
+  FRONTEND_COLUMNS.forEach((frontCol) => {
+    columns.push(frontCol.columnDef);
+  });
+
+  console.log(columns);
+
+  // order and hide columns
+  let orderedColumns = [];
+  COLUMN_ORDER_AND_SETTINGS.forEach((set) => {
+    let colIndex = columns.findIndex((col) => col.field === set.field);
+    if (colIndex !== -1) {
+      let col = columns[colIndex];
+      col.hide = set.hide;
+      ["width", "minWidth"].forEach((prop) => {
+        if (prop in set) {
+          col[prop] = set[prop];
+        }
+      });
+      orderedColumns.push(col);
+      // Remove the column from the array
+      columns.splice(colIndex, 1);
+    }
+  });
+  columns.forEach((col) => {
+    col.hide = true;
+    orderedColumns.push(col);
+  });
+
+  return orderedColumns;
 }
 
-function formatRows(entries) {
+function formatRows(indexData, metadata) {
+  /*
+  The row data for the MaterialsSelector needs to contain
+    * key-value for each column definition (key = "field" of the column);
+    * 'href' - this link is added to the id column;
+
+  The raw index data from the API needs:
+  * href
+  * mapping the short data_label to label/field of columns
+  * calculating the frontend columns
+  */
   let rows = [];
 
+  let labelMap = {};
+  metadata["index-columns"].forEach((col) => {
+    labelMap[col.data_label] = col.label;
+  });
+
   // for testing a small subset:
-  // entries = {
-  //   1: entries["1"],
-  //   2: entries["2"],
-  // };
+  // indexData = indexData.slice(0, 10);
 
-  Object.keys(entries).forEach((i) => {
-    let comp = entries[i];
-    let elemArr = calcElementArray(comp["formula"]);
-    let mc2d_id = `mc2d-${i}`;
+  indexData.forEach((entry) => {
+    // console.log(entry);
+    let href = `${import.meta.env.BASE_URL}#/details/${entry["id"]}`;
 
-    let row = {
-      id: mc2d_id,
-      formula: comp["formula"],
-      prototype: comp["prototype"],
-      point_group: comp["point_group"],
-      band_gap: comp["band_gap"],
-      abundance: comp["abundance"],
-      mag_state: comp["mag_state"],
-      df2_c09: comp["df2_c09"] !== null ? comp["df2_c09"] * 1000 : null, // convert to meV/Å^2
-      rvv10: comp["rvv10"] !== null ? comp["rvv10"] * 1000 : null, // convert to meV/Å^2
-      parent_formula: comp["parent"]["formula"],
-      parent_spg: comp["parent"]["spg"],
-      parent_source_db: comp["parent"]["source_db"],
-      parent_source_id: comp["parent"]["source_id"],
-      n_elem: elemArr.length,
-      elem_array: elemArr,
-      n_atoms: countNumberOfAtoms(comp["formula"]),
-      href: `${import.meta.env.BASE_URL}/#/details/${comp["formula"]}/${mc2d_id}`,
+    let row = {};
+    Object.entries(entry).map(([key, value]) => {
+      if (key in labelMap) {
+        row[labelMap[key]] = value;
+      }
+    });
+
+    let modifiedKeys = {
+      id: entry["id"],
+      href: href,
     };
+
+    FRONTEND_COLUMNS.forEach((frontCol) => {
+      modifiedKeys[frontCol.columnDef.field] = frontCol.calcFunc(entry);
+    });
+
+    row = { ...row, ...modifiedKeys };
+
     rows.push(row);
   });
   return rows;
 }
 
 export async function loadIndexMc2d() {
-  const index_response = await fetch(REST_API_COMPOUNDS, { method: "get" });
-  const index_json = await index_response.json();
-  const index_compounds = index_json["data"]["compounds"];
-  const index_observables = index_json["data"]["observables"];
+  let start = performance.now();
+  let indexData = await loadIndex();
+  let end = performance.now();
+  console.log(`loadIndex: ${end - start} ms`);
+
+  start = performance.now();
+  let metadata = await loadMetadata();
+  end = performance.now();
+  console.log(`loadMetadata: ${end - start} ms`);
+
+  console.log(indexData);
+  // console.log(metadata);
+
+  start = performance.now();
+  let rows = formatRows(indexData, metadata);
+  end = performance.now();
+  console.log(`formatRows: ${end - start} ms`);
+
+  let columns = formatColumns(metadata);
+
+  console.log("Rows", rows);
+  console.log("Rows keys", Object.keys(rows[0]));
+  console.log("Columns", columns);
 
   // return a Promise of the correctly formatted data
   return {
-    columns: columns(index_observables),
-    rows: formatRows(index_compounds),
+    columns: columns,
+    rows: rows,
   };
 }

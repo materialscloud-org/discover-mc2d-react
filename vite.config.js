@@ -1,8 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
+// `base:` is the full subpath of the URL.
+// Set it dynamically from an env variable,
+// as different gh branches are deployed to different subpaths
+
 export default defineConfig({
   plugins: [react()],
-  base: "/discover-mc2d-react/",
+  base: process.env.BRANCH_SUBPATH
+    ? `/discover-mc2d-react/${process.env.BRANCH_SUBPATH}`
+    : "/",
 });

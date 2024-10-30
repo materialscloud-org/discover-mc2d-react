@@ -1,20 +1,5 @@
-.main-page {
-  width: 950px;
-  /* background-color: rgb(243, 243, 243); */
-  /* text-align: left; */
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
-  margin: 0 auto;
-}
-
 .description {
   padding: 20px 40px;
-}
-
-.main-tabs {
-  width: 950px;
 }
 
 /* overload boostrap tab style */

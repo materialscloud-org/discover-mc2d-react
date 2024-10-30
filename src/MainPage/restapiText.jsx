@@ -1,6 +1,9 @@
-import { REST_API_COMPOUNDS, REST_API_AIIDA } from "../common/config";
+import { MC_REST_API_URL, AIIDA_REST_API_URL } from "../common/restApiUtils";
 
 import "./restapiText.css";
+
+const INDEX_URL = `${MC_REST_API_URL}/entries`;
+const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/entries/mc2d-1`;
 
 export const restapiText = (
   <div className="restapi-text-container">
@@ -14,20 +17,20 @@ export const restapiText = (
       <ul>
         <li>
           Index of materials:{" "}
-          <a href={REST_API_COMPOUNDS} target="_blank">
-            {REST_API_COMPOUNDS}
+          <a href={INDEX_URL} target="_blank">
+            {INDEX_URL}
           </a>
         </li>
         <li>
           Single compound data:{" "}
-          <a href={REST_API_COMPOUNDS + "/Ag2C2O4"} target="_blank">
-            {REST_API_COMPOUNDS + "/Ag2C2O4"}
+          <a href={SINGLE_ENTRY_URL} target="_blank">
+            {SINGLE_ENTRY_URL}
           </a>
         </li>
         <li>
           AiiDA REST API for properties and provenance:{" "}
-          <a href={REST_API_AIIDA} target="_blank">
-            {REST_API_AIIDA}
+          <a href={AIIDA_REST_API_URL} target="_blank">
+            {AIIDA_REST_API_URL}
           </a>
         </li>
       </ul>

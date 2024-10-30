@@ -6,76 +6,81 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import {
-  formatTitle,
-  fetchAiidaAttributes,
-  fetchAiidaCifText,
-} from "../common/utils.jsx";
+import { formatChemicalFormula } from "mc-react-library";
 
-import { REST_API_COMPOUNDS } from "../common/config";
+import { Container, Row, Col } from "react-bootstrap";
+
+import { getSymmetryInfo } from "mc-react-library";
+
+import { FaBook } from "react-icons/fa";
+
+import { CitationsList } from "./components/CitationsList";
+
+import {
+  loadMetadata,
+  loadDetails,
+  loadAiidaAttributes,
+  loadAiidaCif,
+} from "../common/restApiUtils";
+
+// import { REST_API_COMPOUNDS } from "../common/config";
 
 import "./index.css";
 import { McloudSpinner } from "mc-react-library";
 
 import OverviewSection from "./OverviewSection";
-import SelectionSection from "./SelectionSection";
-import BandsSection from "./BandsSection";
+import ElectronicSection from "./ElectronicSection";
+import VibrationalSection from "./VibrationalSection";
+import ParentsSection from "./ParentsSection";
 
-async function fetchCompoundData(compound, id) {
-  // 1. fetch the compound data from MC Rest API:
-  const responseCompound = await fetch(`${REST_API_COMPOUNDS}/${compound}`);
-  const jsonCompound = await responseCompound.json();
-  // this returns a list of compounds with the given formula
-  // We need to find the correct one with the specified id
-  const compoundsArr = jsonCompound.data[`${compound}`];
-  const spacegroupsArr = compoundsArr.map((stru) => stru.space_group);
-  const idsArr = compoundsArr.map((stru) => `mc2d-${stru.mc2d_id}`);
+function formatTitle(formulaStr, id) {
+  return (
+    <span>
+      {formatChemicalFormula(formulaStr)} ({id})
+    </span>
+  );
+}
 
-  const selectedCompoundInfo = compoundsArr[idsArr.indexOf(id)];
+async function fetchCompoundData(id) {
+  let metadata = await loadMetadata(id);
+  let details = await loadDetails(id);
 
-  // Fetch structuredata here once, as that might be used for multiple subsections
-  // Other AiiDA data (e.g. bands) will be fetched within each subsection
-  const structure_uuid = selectedCompoundInfo.structure_2D;
+  let symmetryInfo = getSymmetryInfo(details.general.space_group_number);
 
-  let loadedData = {
-    compoundInfo: selectedCompoundInfo,
-    sameFormulaStructures: { spacegrps: spacegroupsArr, ids: idsArr },
-    structureAttributes: await fetchAiidaAttributes(structure_uuid),
-    structureCifText: await fetchAiidaCifText(structure_uuid),
+  let structureUuid = details.general.structure_relaxed_uuid;
+
+  let aiidaAttributes = await loadAiidaAttributes(structureUuid);
+  let structureCif = await loadAiidaCif(structureUuid);
+
+  return {
+    metadata: metadata,
+    details: details,
+    symmetryInfo: symmetryInfo,
+    structureInfo: { aiidaAttributes: aiidaAttributes, cif: structureCif },
   };
-  return loadedData;
 }
 
 function DetailPage() {
-  const [compoundInfo, setCompoundInfo] = useState(null);
-  const [sameFormulaStructures, setSameFormulaStructures] = useState(null);
-  const [structureAttributes, setStructureAttributes] = useState(null);
-  const [structureCifText, setStructureCifText] = useState(null);
+  const [loadedData, setLoadedData] = useState(null);
 
   // for routing
   const navigate = useNavigate();
-  const params = useParams();
+  const params = useParams(); // Route parameters
 
   useEffect(() => {
-    // Set state to null to show "loading" screen
-    // while new parameters are loaded
-    setCompoundInfo(null);
-    setSameFormulaStructures(null);
-    setStructureAttributes(null);
-    setStructureCifText(null);
-
-    let compound = params["compound"];
-    let id = params["id"];
-
-    fetchCompoundData(compound, id).then((loadedData) => {
-      setCompoundInfo(loadedData.compoundInfo);
-      setSameFormulaStructures(loadedData.sameFormulaStructures);
-      setStructureAttributes(loadedData.structureAttributes);
-      setStructureCifText(loadedData.structureCifText);
+    setLoadedData(null);
+    fetchCompoundData(params.id).then((loadedData) => {
+      console.log("Loaded general data", loadedData);
+      setLoadedData(loadedData);
     });
-  }, [params.compound, params.id]); // <- call when route params change
+  }, [params.id]); // <- call when route params change
 
-  let loading = compoundInfo == null;
+  let title = null;
+  let loading = loadedData == null;
+  if (!loading) {
+    title = formatTitle(loadedData.details.general.formula, params.id);
+  }
+
   return (
     <MaterialsCloudHeader
       activeSection={"discover"}
@@ -85,32 +90,28 @@ function DetailPage() {
           name: "Materials Cloud 2D crystals database",
           link: `${import.meta.env.BASE_URL}`,
         },
-        { name: formatTitle(params), link: null },
+        { name: params.id, link: null },
       ]}
     >
-      <div className="detail-page">
+      <Container fluid="xxl">
         <TitleAndLogo />
-        <div className="detail-page-inner">
-          <h3>{formatTitle(params)}</h3>
-          {loading ? (
-            <div style={{ padding: "80px 400px" }}>
-              <McloudSpinner />
-            </div>
-          ) : (
-            <>
-              <SelectionSection
-                sameFormulaStructures={sameFormulaStructures}
-                currentStructure={params}
-              />
-              <OverviewSection
-                cifText={structureCifText}
-                compoundInfo={compoundInfo}
-              />
-              <BandsSection compoundInfo={compoundInfo} />
-            </>
-          )}
-        </div>
-      </div>
+        {loading ? (
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        ) : (
+          <>
+            <div className="detail-page-heading">{title}</div>
+            <CitationsList
+              citationLabels={loadedData.details.general.citations}
+            />
+            <OverviewSection params={params} loadedData={loadedData} />
+            <ElectronicSection params={params} loadedData={loadedData} />
+            <VibrationalSection params={params} loadedData={loadedData} />
+            <ParentsSection params={params} loadedData={loadedData} />
+          </>
+        )}
+      </Container>
     </MaterialsCloudHeader>
   );
 }

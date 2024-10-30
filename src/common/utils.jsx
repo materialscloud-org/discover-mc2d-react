@@ -1,39 +1,17 @@
-import { REST_API_AIIDA } from "./config";
-
-import { formatChemicalFormula } from "mc-react-library";
-
-export function formatTitle(params) {
-  return (
-    <span>
-      {formatChemicalFormula(params["compound"])} ({params["id"]})
-    </span>
-  );
+export function countNumberOfAtoms(formula) {
+  // split on capital letters to get element+number strings
+  var elnum = formula.split(/(?=[A-Z])/);
+  var num = 0;
+  elnum.forEach((v) => {
+    let match = v.match(/\d+/);
+    let n = match == null ? 1 : parseInt(match[0]);
+    num += n;
+  });
+  return num;
 }
 
-/**
- * Fetches all AiiDA attributes for the node.
- *
- * @param {string} uuid The uuid of the AiiDA node
- * @returns The AiiDA attributes available through the restAPI
- */
-export async function fetchAiidaAttributes(uuid) {
-  const responseAiiDA = await fetch(
-    `${REST_API_AIIDA}/nodes/${uuid}/contents/attributes`,
-  );
-  const jsonAiiDA = await responseAiiDA.json();
-  return jsonAiiDA.data.attributes;
-}
-
-/**
- * For an AiiDA StructureData node, fetches the structure in CIF format
- *
- * @param {string} uuid The uuid of the AiiDA node
- * @returns The structure in CIF format as a continuous string
- */
-export async function fetchAiidaCifText(uuid) {
-  const responseAiiDACif = await fetch(
-    `${REST_API_AIIDA}/nodes/${uuid}/download?download_format=cif&download=false`,
-  );
-  const jsonAiiDACif = await responseAiiDACif.json();
-  return jsonAiiDACif.data.download.data;
+export function countNumberOfElements(formula) {
+  // just count the number of capital letters
+  let matches = formula.match(/[A-Z]/g);
+  return matches ? matches.length : 0;
 }
