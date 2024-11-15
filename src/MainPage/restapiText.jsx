@@ -1,9 +1,14 @@
-import { MC_REST_API_URL, AIIDA_REST_API_URL } from "../common/restApiUtils";
+import {
+  MC_REST_API_URL_BASE,
+  MC_REST_API_URL,
+  AIIDA_REST_API_URL,
+} from "../common/restApiUtils";
 
 import "./restapiText.css";
 
-const INDEX_URL = `${MC_REST_API_URL}/entries`;
-const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/entries/mc2d-1`;
+const DOCS_URL = `${MC_REST_API_URL_BASE}/docs`;
+const INDEX_URL = `${MC_REST_API_URL}/overview`;
+const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/base/mc2d-1`;
 
 export const restapiText = (
   <div className="restapi-text-container">
@@ -13,19 +18,28 @@ export const restapiText = (
     </p>
     <div className="restapi-h">1. Materials Cloud and AiiDA REST APIs</div>
     <div>
-      The MC2D frontend is running on the following APIs:
+      The MC2D frontend is running on:
       <ul>
         <li>
-          Index of materials:{" "}
-          <a href={INDEX_URL} target="_blank">
-            {INDEX_URL}
+          The Materials Cloud REST API for the curated metadata:{" "}
+          <a href={DOCS_URL} target="_blank">
+            {DOCS_URL}
           </a>
-        </li>
-        <li>
-          Single compound data:{" "}
-          <a href={SINGLE_ENTRY_URL} target="_blank">
-            {SINGLE_ENTRY_URL}
-          </a>
+          , see e.g.
+          <ul>
+            <li>
+              Index of materials:{" "}
+              <a href={INDEX_URL} target="_blank">
+                {INDEX_URL}
+              </a>
+            </li>
+            <li>
+              Single entry data:{" "}
+              <a href={SINGLE_ENTRY_URL} target="_blank">
+                {SINGLE_ENTRY_URL}
+              </a>
+            </li>
+          </ul>
         </li>
         <li>
           AiiDA REST API for properties and provenance:{" "}

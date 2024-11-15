@@ -2,8 +2,9 @@
 // REST API UTILITIES
 // Define all functions for api calls here.
 
-export const MC_REST_API_URL =
-  "https://dev-aiida.materialscloud.org/mc-rest-api/mc2d/pbe-v1";
+export const MC_REST_API_URL_BASE =
+  "https://dev-aiida.materialscloud.org/mc-rest-api";
+export const MC_REST_API_URL = `${MC_REST_API_URL_BASE}/mc2d/pbe-v1`;
 export const AIIDA_REST_API_URL =
   "https://dev-aiida.materialscloud.org/mc2d-new/api/v4";
 export const EXPLORE_URL = "https://dev-www.materialscloud.org/explore/mc2d";
@@ -13,7 +14,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function loadIndex() {
   // await delay(2000);
-  let endpoint = `${MC_REST_API_URL}/entries`;
+  let endpoint = `${MC_REST_API_URL}/overview`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -35,7 +36,7 @@ export async function loadMetadata() {
 }
 
 export async function loadDetails(id) {
-  let endpoint = `${MC_REST_API_URL}/entries/${id}`;
+  let endpoint = `${MC_REST_API_URL}/base/${id}`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -90,6 +91,21 @@ export async function loadPhononVis(id) {
     return json;
   } catch (error) {
     console.error("Error fetching phonon-vis:", error);
+    return null;
+  }
+}
+
+export async function loadStructureUuids() {
+  let endpoint = `${MC_REST_API_URL}/structure-uuids`;
+  try {
+    const response = await fetch(endpoint, { method: "get" });
+    if (!response.ok) {
+      return null;
+    }
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("Error fetching structure-uuids:", error);
     return null;
   }
 }

@@ -10,16 +10,18 @@ import { getSymmetryInfo } from "mc-react-library";
 const COLUMN_ORDER_AND_SETTINGS = [
   { field: "id", hide: false, width: 120 },
   { field: "formula", hide: false },
+  { field: "formula_hill", hide: true },
   { field: "num_elements", hide: false },
   { field: "num_atoms", hide: true },
   { field: "prototype", hide: false },
-  { field: "space_group_number", hide: false },
-  { field: "space_group_int", hide: true },
+  { field: "space_group_int", hide: false },
+  { field: "space_group_number", hide: true },
   { field: "band_gap", hide: false },
   { field: "abundance", hide: false },
   { field: "magnetic_state", hide: true },
   { field: "total_magnetization", hide: true, minWidth: 130 },
   { field: "absolute_magnetization", hide: true, minWidth: 130 },
+  { field: "phonons_unstable", hide: true },
   { field: "binding_energy_df2", hide: false, minWidth: 140 },
   { field: "binding_energy_rvv10", hide: false },
   { field: "parent_formula", hide: false },
@@ -35,7 +37,7 @@ const FRONTEND_COLUMNS = [
       headerName: "Number of elements",
       colType: "integer",
     },
-    calcFunc: (entry) => countNumberOfElements(entry["formula"]),
+    calcFunc: (entry) => countNumberOfElements(entry["formula_h"]),
   },
   {
     columnDef: {
@@ -43,7 +45,7 @@ const FRONTEND_COLUMNS = [
       headerName: "Num. of atoms/cell",
       colType: "integer",
     },
-    calcFunc: (entry) => countNumberOfAtoms(entry["formula"]),
+    calcFunc: (entry) => countNumberOfAtoms(entry["formula_h"]),
   },
   // {
   //   columnDef: {
