@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import "./index.css";
 
 import MaterialsCloudHeader from "mc-react-header";
@@ -17,7 +19,10 @@ import { loadIndexMc2d } from "./loadIndexMc2d";
 
 import { DownloadButton } from "./DownloadButton.jsx";
 
-function MainPage() {
+const MainPage = ({ tab }) => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(tab || "use");
+
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
 
@@ -29,6 +34,15 @@ function MainPage() {
   }, []);
 
   const materialSelectorRef = useRef(null);
+
+  const handleTabSelect = (selectedTab) => {
+    setActiveTab(selectedTab);
+    if (selectedTab == "use") {
+      navigate(`/`);
+    } else {
+      navigate(`/${selectedTab}`);
+    }
+  };
 
   return (
     <MaterialsCloudHeader
@@ -49,12 +63,12 @@ function MainPage() {
           computational exfoliation procedure. This database contains the
           relaxed 2D materials and their various properties.
         </div>
-        <Tabs defaultActiveKey="use" className="main-tabs">
+        <Tabs
+          className="main-tabs"
+          activeKey={activeTab}
+          onSelect={handleTabSelect}
+        >
           <Tab eventKey="use" title="Use">
-            {/* <div className="description">
-                Search for materials by filtering based on the periodic table
-                and the columns of the table below:
-              </div> */}
             <div style={{ marginTop: "20px" }}></div>
             <MaterialSelector
               ref={materialSelectorRef}
@@ -69,13 +83,13 @@ function MainPage() {
           <Tab eventKey="about" title="About">
             {aboutText}
           </Tab>
-          <Tab eventKey="rest" title="REST API">
+          <Tab eventKey="restapi" title="REST API">
             {restapiText}
           </Tab>
         </Tabs>
       </Container>
     </MaterialsCloudHeader>
   );
-}
+};
 
 export default MainPage;

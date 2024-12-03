@@ -114,8 +114,6 @@ function formatColumns(metadata) {
     columns.push(frontCol.columnDef);
   });
 
-  console.log(columns);
-
   // order and hide columns
   let orderedColumns = [];
   COLUMN_ORDER_AND_SETTINGS.forEach((set) => {
@@ -200,7 +198,7 @@ export async function loadIndexMc2d() {
   end = performance.now();
   console.log(`loadMetadata: ${end - start} ms`);
 
-  console.log(indexData);
+  // console.log(indexData);
   // console.log(metadata);
 
   start = performance.now();
@@ -210,9 +208,9 @@ export async function loadIndexMc2d() {
 
   let columns = formatColumns(metadata);
 
-  console.log("Rows", rows);
-  console.log("Rows keys", Object.keys(rows[0]));
-  console.log("Columns", columns);
+  // console.log("Rows", rows);
+  // console.log("Rows keys", Object.keys(rows[0]));
+  // console.log("Columns", columns);
 
   // return a Promise of the correctly formatted data
   return {

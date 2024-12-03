@@ -17,6 +17,8 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/about" element={<MainPage tab="about" />} />
+        <Route path="/restapi" element={<MainPage tab="restapi" />} />
         <Route path="/details/:id" element={<DetailPage />} />
       </Routes>
     </HashRouter>
