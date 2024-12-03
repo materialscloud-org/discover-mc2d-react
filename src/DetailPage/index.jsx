@@ -12,8 +12,6 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { getSymmetryInfo } from "mc-react-library";
 
-import { FaBook } from "react-icons/fa";
-
 import { CitationsList } from "./components/CitationsList";
 
 import {
@@ -23,8 +21,6 @@ import {
   loadAiidaCif,
 } from "../common/restApiUtils";
 
-// import { REST_API_COMPOUNDS } from "../common/config";
-
 import "./index.css";
 import { McloudSpinner } from "mc-react-library";
 
@@ -32,6 +28,7 @@ import OverviewSection from "./OverviewSection";
 import ElectronicSection from "./ElectronicSection";
 import VibrationalSection from "./VibrationalSection";
 import ParentsSection from "./ParentsSection";
+import StructureSection from "./StructureSection";
 
 function formatTitle(formulaStr, id) {
   return (
@@ -106,6 +103,7 @@ function DetailPage() {
               citationLabels={loadedData.details.general.citations}
             />
             <OverviewSection params={params} loadedData={loadedData} />
+            <StructureSection params={params} loadedData={loadedData} />
             <ElectronicSection params={params} loadedData={loadedData} />
             <VibrationalSection params={params} loadedData={loadedData} />
             <ParentsSection params={params} loadedData={loadedData} />
