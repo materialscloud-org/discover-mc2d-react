@@ -1,30 +1,39 @@
 import { FaBook } from "react-icons/fa";
+import { DoiBadge } from "mc-react-library";
 
 import "./CitationsList.css";
 
 export const CitationText = ({ info }) => (
-  <div style={{ padding: "2px" }}>
+  <div
+    style={{
+      padding: "2px",
+      display: "flex",
+      gap: "6px",
+      alignItems: "center",
+    }}
+  >
     <a
       className="citation-a"
       href={`https://doi.org/${info.doi}`}
       target="_blank"
     >
       <FaBook size={16} color="black" /> {info.authorsText}, {info.journalText},
-      doi: {info.doi}, ({info.year})
+      ({info.year})
     </a>
+    <DoiBadge doi={info.doi} />
   </div>
 );
 
 const CITATION_MAPPING = {
   Mounet18: {
     authorsText: "Mounet et al.",
-    journalText: "Nat. Nanotech.",
+    journalText: "Nat. Nanotech. 13, 246-252",
     doi: "10.1038/s41565-017-0035-5",
     year: 2018,
   },
   Campi23: {
     authorsText: "Campi et al.",
-    journalText: "ACS Nano",
+    journalText: "ACS Nano 17, 12, 11268-11278",
     doi: "10.1021/acsnano.2c11510",
     year: 2023,
   },
