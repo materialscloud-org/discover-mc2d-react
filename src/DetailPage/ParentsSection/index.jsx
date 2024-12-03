@@ -142,9 +142,18 @@ const ParentsSection = (props) => {
     parentsList[selectedParentIndex].source_db == "ICSD" ||
     parentsList[selectedParentIndex].source_db == "MPDS"
   ) {
-    naMsg =
-      "Parent structures originating from ICSD" +
-      " and MPDS cannot be displayed here for licensing reasons.";
+    naMsg = (
+      <span>
+        Parent structures originating from ICSD and MPDS cannot be displayed
+        here for licensing reasons. Link to see the structure in the original
+        database:{" "}
+        {formatSourceLink(
+          parentsList[selectedParentIndex].source_db,
+          parentsList[selectedParentIndex].source_db_id,
+        )}
+        .
+      </span>
+    );
   }
 
   let structurePanel = <div style={{ margin: "71px 40px 0px" }}>{naMsg}</div>;
