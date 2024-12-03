@@ -36,17 +36,40 @@ function formatPowerOf10(number, precision = 2) {
   );
 }
 
+const openNewTabAndScroll = (url, elementId) => {
+  const newTab = window.open(url, "_blank");
+
+  newTab.onload = () => {
+    // Find the target element and scroll to it
+    const targetElement = newTab.document.getElementById(elementId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+};
+
 function GeneralInfoBox({
   details,
   metadata,
   symmetryInfo,
   primaryParentInfo,
 }) {
-  let parentSymmInfo = getSymmetryInfo(primaryParentInfo.space_group_number);
   return (
     <MCInfoBox style={{ height: "460px" }}>
       <div>
-        <b>General info</b>
+        <b>General info</b> (
+        <a
+          href="javascript:void(0)"
+          onClick={() =>
+            openNewTabAndScroll(
+              `${import.meta.env.BASE_URL}#/about`,
+              "definitions",
+            )
+          }
+        >
+          See definitions
+        </a>
+        )
         <ul className="no-bullets">
           <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
           <li>
@@ -58,48 +81,6 @@ function GeneralInfoBox({
           <li>Abundance: {formatPowerOf10(details.general.abundance)}</li>
         </ul>
       </div>
-      {/* <div>
-        <b>Primary 3D parent</b> (details in section "3D parent crystals")
-        <ul className="no-bullets">
-          <li>Formula: {formatChemicalFormula(primaryParentInfo.formula)}</li>
-          <li>
-            Source database:{" "}
-            {formatSourceLink(
-              primaryParentInfo.source_db,
-              primaryParentInfo.source_db_id,
-            )}
-          </li>
-          <li>
-            Bravais lattice: {parentSymmInfo.bravais_lattice} (
-            {parentSymmInfo.bravais_lattice_pearson})
-          </li>
-          <li>
-            Space group:{" "}
-            {formatSpaceGroupSymbol(parentSymmInfo.space_group_symbol)} (
-            {primaryParentInfo.space_group_number})
-          </li>
-          <li>
-            DF2-C09 Binding energy:{" "}
-            {formatAiidaProp(primaryParentInfo.binding_energy_df2, "meV/Å²", 1)}
-          </li>
-          <li>
-            rVV10 Binding energy:{" "}
-            {formatAiidaProp(
-              primaryParentInfo.binding_energy_rvv10,
-              "meV/Å²",
-              1,
-            )}
-          </li>
-          <li>
-            Δ<sub>DF2</sub>:{" "}
-            {formatAiidaProp(primaryParentInfo.delta_df2, "%", 1, 100)}
-          </li>
-          <li>
-            Δ<sub>rVV10</sub>:{" "}
-            {formatAiidaProp(primaryParentInfo.delta_rvv10, "%", 1, 100)}
-          </li>
-        </ul>
-      </div> */}
       <div>
         <b>Exfoliation info</b> (from primary parent{" "}
         {formatSourceLink(

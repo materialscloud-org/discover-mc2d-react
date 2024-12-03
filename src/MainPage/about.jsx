@@ -492,7 +492,9 @@ export const aboutText = (
         <li>phonon dispersion curves.</li>
       </ul>
       <p>More details can be found in the associated publications.</p>
-      <div className="about-h">Definitions and further details</div>
+      <div id="definitions" className="about-h">
+        Definitions and further details
+      </div>
       <MathJax>
         <ul>
           <li>

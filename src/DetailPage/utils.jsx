@@ -1,9 +1,4 @@
-import {
-  ExploreButton,
-  StructDownloadButton,
-  formatChemicalFormula,
-  formatSpaceGroupSymbol,
-} from "mc-react-library";
+import { ExploreButton } from "mc-react-library";
 
 import { EXPLORE_URL } from "../common/restApiUtils";
 
@@ -40,12 +35,7 @@ function sourceUrl(db, id) {
 
 export function formatSourceLink(db, id) {
   return (
-    <a
-      className="source-a"
-      href={sourceUrl(db, id)}
-      title={"Go to source data"}
-      target="_blank"
-    >
+    <a href={sourceUrl(db, id)} title={"Go to source data"} target="_blank">
       {db} - {id}
     </a>
   );
