@@ -36,6 +36,13 @@ function formatPowerOf10(number, precision = 2) {
   );
 }
 
+const scrollToId = (id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
 const openNewTabAndScroll = (url, elementId) => {
   const newTab = window.open(url, "_blank");
 
@@ -54,22 +61,37 @@ function GeneralInfoBox({
   symmetryInfo,
   primaryParentInfo,
 }) {
+  let anchorDefinitions = (
+    <a
+      href="#"
+      onClick={(e) => {
+        e.preventDefault();
+        openNewTabAndScroll(
+          `${import.meta.env.BASE_URL}#/about`,
+          "definitions",
+        );
+      }}
+    >
+      See definitions
+    </a>
+  );
+
+  let anchorParents = (
+    <a
+      href="#"
+      onClick={(e) => {
+        e.preventDefault();
+        scrollToId("parents-section");
+      }}
+    >
+      below
+    </a>
+  );
+
   return (
     <MCInfoBox style={{ height: "460px" }}>
       <div>
-        <b>General info</b> (
-        <a
-          href="javascript:void(0)"
-          onClick={() =>
-            openNewTabAndScroll(
-              `${import.meta.env.BASE_URL}#/about`,
-              "definitions",
-            )
-          }
-        >
-          See definitions
-        </a>
-        )
+        <b>General info</b> ({anchorDefinitions})
         <ul className="no-bullets">
           <li>Formula: {formatChemicalFormula(details.general.formula)}</li>
           <li>
@@ -82,12 +104,13 @@ function GeneralInfoBox({
         </ul>
       </div>
       <div>
-        <b>Exfoliation info</b> (from primary parent{" "}
+        <b>Exfoliation info</b> <br />
+        (relative to primary parent{" "}
         {formatSourceLink(
           primaryParentInfo.source_db,
           primaryParentInfo.source_db_id,
         )}
-        )
+        ; see {anchorParents} for all parents)
         <ul className="no-bullets">
           <li>
             <b>Binding energies:</b>

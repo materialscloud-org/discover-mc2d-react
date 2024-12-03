@@ -168,7 +168,9 @@ const ParentsSection = (props) => {
 
   return (
     <div>
-      <div className="section-heading">3D parent crystals</div>
+      <div id="parents-section" className="section-heading">
+        3D parent crystals
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">
