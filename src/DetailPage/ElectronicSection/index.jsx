@@ -31,7 +31,7 @@ function shiftBands(bandsData, shift) {
 function ElectronicInfoBox({ electronicData, metadata }) {
   let magStateStr = electronicData.magnetic_state;
   if (magStateStr == null) {
-    magStateStr = "non-magnetic; untested";
+    magStateStr = "non-magnetic calculation;  magnetic state untested";
   }
 
   return (
