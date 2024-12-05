@@ -18,7 +18,7 @@ export default function CitationBox(props) {
       ) : null}
       {props.arxiv ? (
         <div className="citationbox-extras">
-          <b>arxiv: </b>
+          <b>arXiv: </b>
           {props.arxiv}
         </div>
       ) : null}

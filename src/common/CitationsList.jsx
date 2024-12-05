@@ -20,7 +20,7 @@ export const CitationText = ({ info }) => (
       <FaBook size={16} color="black" /> {info.authorsText}, {info.journalText},
       ({info.year})
     </a>
-    <DoiBadge doi={info.doi} />
+    <DoiBadge doi={info.doi} label="Paper DOI" color="#a2e5b7" />
   </div>
 );
 

@@ -14,8 +14,8 @@ export default function TitleAndLogo() {
           Materials Cloud 2D crystals database (MC2D)
         </span>
         <div className="doi-container">
-          <DoiBadge doi_id="az-b2" />
-          <DoiBadge doi_id="36-nd" />
+          <DoiBadge doi_id="az-b2" label="Data DOI" />
+          <DoiBadge doi_id="36-nd" label="Data DOI" />
         </div>
       </div>
       <img src={Mc2dLogo} className="mc2d-logo"></img>

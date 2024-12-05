@@ -388,10 +388,10 @@ export const aboutText = (
         arxiv={
           <span>
             N. Mounet et al., arXiv:1611.05234, doi:{" "}
-            <a href="https://doi.org/10.48550/arXiv:1611.05234" target="_blank">
-              10.48550/arXiv:1611.05234
+            <a href="https://doi.org/10.48550/arXiv.1611.05234" target="_blank">
+              10.48550/arXiv.1611.05234
             </a>{" "}
-            (2020)
+            (2016)
           </span>
         }
       />

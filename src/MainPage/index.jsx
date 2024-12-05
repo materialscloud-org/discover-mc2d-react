@@ -64,7 +64,7 @@ const MainPage = ({ tab }) => {
           computational exfoliation procedure. This database contains the
           relaxed 2D materials and their various properties. For more details,
           please see the related publications:
-          <div style={{ marginTop: "5px" }}>
+          <div style={{ margin: "10px" }}>
             <CitationsList citationLabels={["Mounet18", "Campi23"]} />
           </div>
         </div>
