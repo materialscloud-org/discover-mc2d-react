@@ -27,14 +27,14 @@ const StructureSection = ({ params, loadedData }) => {
                     Explore provenance{" "}
                     <ExploreButton
                       explore_url={EXPLORE_URL}
-                      uuid={details.general.structure_uuid}
+                      uuid={details.general.structure_relaxed_uuid}
                     />
                   </li>
                   <li>
                     Download structure
                     <StructDownloadButton
                       aiida_rest_url={AIIDA_REST_API_URL}
-                      uuid={details.general.structure_uuid}
+                      uuid={details.general.structure_relaxed_uuid}
                     />
                   </li>
                 </ul>

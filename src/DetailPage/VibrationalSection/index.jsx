@@ -22,7 +22,7 @@ const VibrationalSection = (props) => {
   const [phononVisData, setPhononVisData] = useState(null);
 
   let vibrationalData = props.loadedData.details.vibrational;
-  console.log(vibrationalData);
+  console.log("vibrationalData", vibrationalData);
 
   let bandsUuid = vibrationalData.phonon_bands_uuid;
 
@@ -39,7 +39,7 @@ const VibrationalSection = (props) => {
 
     loadPhononVis(props.params.id).then((data) => {
       setPhononVisData(data);
-      console.log("PHONON VIS", data);
+      console.log("Phonon visualizer data", data);
     });
   }, []);
 

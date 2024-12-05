@@ -122,8 +122,6 @@ const ParentsSection = (props) => {
     symmetryInfoList.push(getSymmetryInfo(parent.space_group_number));
   });
 
-  console.log("parentsList", parentsList);
-
   useEffect(() => {
     if (selectedParentUuid) {
       fetchParentStructure(selectedParentUuid).then((loaded) => {
