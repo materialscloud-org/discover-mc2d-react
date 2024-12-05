@@ -18,6 +18,7 @@ import { restapiText } from "./restapiText";
 import { loadIndexMc2d } from "./loadIndexMc2d";
 
 import { DownloadButton } from "./DownloadButton.jsx";
+import { CitationsList } from "../common/CitationsList.jsx";
 
 const MainPage = ({ tab }) => {
   const navigate = useNavigate();
@@ -61,7 +62,11 @@ const MainPage = ({ tab }) => {
           Materials Cloud 2D crystals database is a curated set of 2D materials
           obtained by screening most known 3D crystal structures by a
           computational exfoliation procedure. This database contains the
-          relaxed 2D materials and their various properties.
+          relaxed 2D materials and their various properties. For more details,
+          please see the related publications:
+          <div style={{ marginTop: "5px" }}>
+            <CitationsList citationLabels={["Mounet18", "Campi23"]} />
+          </div>
         </div>
         <Tabs
           className="main-tabs"

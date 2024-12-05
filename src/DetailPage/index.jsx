@@ -12,7 +12,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { getSymmetryInfo } from "mc-react-library";
 
-import { CitationsList } from "./components/CitationsList";
+import { CitationsList } from "../common/CitationsList";
 
 import {
   loadMetadata,
