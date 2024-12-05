@@ -385,6 +385,15 @@ export const aboutText = (
             (2020)
           </span>
         }
+        arxiv={
+          <span>
+            N. Mounet et al., arXiv:1611.05234, doi:{" "}
+            <a href="https://doi.org/10.48550/arXiv:1611.05234" target="_blank">
+              10.48550/arXiv:1611.05234
+            </a>{" "}
+            (2020)
+          </span>
+        }
       />
       <CitationBox
         title={<span>Expansion of the Materials Cloud 2D Database</span>}
