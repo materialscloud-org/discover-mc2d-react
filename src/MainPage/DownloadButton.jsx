@@ -4,7 +4,7 @@ import { Spinner } from "react-bootstrap";
 import { saveAs } from "file-saver";
 
 import { HelpButton } from "mc-react-library";
-import { Popover } from "react-bootstrap";
+import { Popover, Button } from "react-bootstrap";
 
 import { loadStructureUuids, AIIDA_REST_API_URL } from "../common/restApiUtils";
 
@@ -78,11 +78,12 @@ export const DownloadButton = ({ materialSelectorRef, disabled }) => {
 
   return (
     <div className="download-button-outer-container">
-      <button
+      <Button
+        size="sm"
         onClick={handleDownload}
         disabled={disabled || isLoading}
-        className={`aggrid-style-button ${disabled || isLoading ? "aggrid-style-button-disabled" : ""}`}
-        style={{ marginTop: "5px" }}
+        // className={`aggrid-style-button ${disabled || isLoading ? "aggrid-style-button-disabled" : ""}`}
+        // style={{ marginTop: "5px" }}
       >
         {isLoading ? (
           <Spinner
@@ -95,7 +96,7 @@ export const DownloadButton = ({ materialSelectorRef, disabled }) => {
         ) : (
           "Download filtered entries"
         )}
-      </button>
+      </Button>
       <HelpButton popover={popover} />
     </div>
   );
