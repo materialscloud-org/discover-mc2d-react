@@ -36,8 +36,13 @@ jobs:
             echo "BRANCH_SUBPATH=/${{ github.ref_name }}/" >> $GITHUB_ENV
           fi
 
-      - name: Build project
-        run: npm run build
+      - name: Build project with development backend
+        if: github.ref_name != 'main'
+        run: npm run build:be-dev
+
+      - name: Build project with production backend
+        if: github.ref_name == 'main'
+        run: npm run build:be-prod
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

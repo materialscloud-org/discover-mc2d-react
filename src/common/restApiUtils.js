@@ -2,15 +2,29 @@
 // REST API UTILITIES
 // Define all functions for api calls here.
 
-export const MC_REST_API_URL_BASE =
-  "https://dev-aiida.materialscloud.org/mc-rest-api";
-export const MC_REST_API_URL = `${MC_REST_API_URL_BASE}/mc2d/pbe-v1`;
-export const AIIDA_REST_API_URL =
-  "https://dev-aiida.materialscloud.org/mc2d-new/api/v4";
-export const EXPLORE_URL = "https://dev-www.materialscloud.org/explore/mc2d";
+// By default, use development API URLS
+let mcRestApiUrl = "https://dev-aiida.materialscloud.org/mc-rest-api/";
+let aiidaRestBaseUrl = "https://dev-aiida.materialscloud.org";
+let exploreBaseUrl = "https://dev-www.materialscloud.org/explore/";
+
+// Use production backend if specified
+if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
+  mcRestApiUrl = "https://aiida.materialscloud.org/mc-rest-api/";
+  aiidaRestBaseUrl = "https://aiida.materialscloud.org";
+  exploreBaseUrl = "https://www.materialscloud.org/explore/";
+}
+
+export const MC_REST_API_URL_BASE = mcRestApiUrl;
+export const MC_REST_API_URL = `${mcRestApiUrl}mc2d/pbe-v1`;
+
+export const AIIDA_REST_API_URL = `${aiidaRestBaseUrl}/mc2d/api/v4`;
+export const EXPLORE_URL = `${exploreBaseUrl}mc2d`;
 
 // delay function for testing loading animations:
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms) => {
+  console.log(`delaying for ${ms}ms for testing loading animations`);
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 export async function loadIndex() {
   // await delay(2000);
@@ -69,7 +83,7 @@ export async function loadAiidaCif(uuid) {
 }
 
 export async function loadAiidaBands(uuid) {
-  await delay(2000);
+  // await delay(2000);
   let endpoint = `${AIIDA_REST_API_URL}/nodes/${uuid}/download?download_format=json`;
   try {
     const response = await fetch(endpoint, { method: "get" });
