@@ -80,6 +80,7 @@ export const DownloadButton = ({ materialSelectorRef, disabled }) => {
     <div className="download-button-outer-container">
       <Button
         size="sm"
+        variant="secondary"
         onClick={handleDownload}
         disabled={disabled || isLoading}
         // className={`aggrid-style-button ${disabled || isLoading ? "aggrid-style-button-disabled" : ""}`}
