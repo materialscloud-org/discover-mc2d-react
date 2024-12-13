@@ -11,13 +11,22 @@ For local development:
 > npm run dev
 ```
 
-To build an optimized package, use
+This runs the frontend with the development backend URLs.
+
+To use production backend URLs instead:
 
 ```
-> npm run build
+> npm run dev:be-prod
 ```
 
-Preview locally with
+To build an optimized package with development or production backend, use respectively
+
+```
+> npm run build:be-dev
+> npm run build:be-prod
+```
+
+Preview either locally with
 
 ```
 > npm run preview
@@ -29,5 +38,7 @@ The following branches are automatically deployed via Github actions in the foll
 
 - `main`
   - deployed to https://materialscloud-org.github.io/discover-mc2d-react/
+  - and is running on the production backend.
 - `develop`
   - deployed to https://materialscloud-org.github.io/discover-mc2d-react/develop
+  - and is running on the dev backend.
