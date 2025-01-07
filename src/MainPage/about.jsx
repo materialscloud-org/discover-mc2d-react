@@ -254,6 +254,17 @@ const references = {
       </span>
     ),
   },
+  printable2d: {
+    type: "related_projects",
+    ref: (
+      <span>
+        2D-PRINTABLE - Advanced 2D Materials for printed electronics.{" "}
+        <a href="https://2d-printable.eu/" target="_blank">
+          https://2d-printable.eu/
+        </a>
+      </span>
+    ),
+  },
   lebegue: {
     type: "similar_studies",
     ref: (
@@ -636,7 +647,9 @@ export const aboutText = (
       {renderRefs("vdw_radii")}
       <b>Other references</b>
       {renderRefs("other")}
-      <b>Simiar studies</b>
+      <b>Related projects</b>
+      {renderRefs("related_projects")}
+      <b>Similar studies</b>
       {renderRefs("similar_studies")}
     </div>
   </MathJaxContext>
