@@ -627,6 +627,17 @@ export const aboutText = (
           </li>
         </ul>
       </MathJax>
+      <div className="about-h">Legacy app</div>
+      <p>
+        The previous version of this app can be found at{" "}
+        <a
+          href="https://www.materialscloud.org/discover/legacy-mc2d"
+          target="_blank"
+        >
+          materialscloud.org/discover/legacy-mc2d
+        </a>
+        .
+      </p>
       <div className="about-h">Acknowledgements and references</div>
       <b>HPC support</b>
       <br />
