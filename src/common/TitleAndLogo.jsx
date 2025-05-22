@@ -11,7 +11,7 @@ export default function TitleAndLogo() {
     <div className="title-and-logo">
       <div className="title-and-doi">
         <span className="title-span">
-          Materials Cloud 2D crystals database (MC2D)
+          Materials Cloud Two-Dimensional Structure Database (MC2D)
         </span>
         <div className="doi-container">
           <DoiBadge doi_id="az-b2" label="Data DOI" />

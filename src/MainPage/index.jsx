@@ -51,7 +51,7 @@ const MainPage = ({ tab }) => {
       breadcrumbsPath={[
         { name: "Discover", link: "https://www.materialscloud.org/discover" },
         {
-          name: "Materials Cloud 2D crystals database",
+          name: "Materials Cloud Two-Dimensional Structure Database",
           link: null,
         },
       ]}
@@ -59,9 +59,9 @@ const MainPage = ({ tab }) => {
       <Container fluid="xxl">
         <TitleAndLogo />
         <div className="description">
-          Materials Cloud 2D crystals database is a curated set of 2D materials
-          obtained by screening most known 3D crystal structures by a
-          computational exfoliation procedure. This database contains the
+          Materials Cloud Two-Dimensional Structure Database is a curated set of
+          2D materials obtained by screening most known 3D crystal structures by
+          a computational exfoliation procedure. This database contains the
           relaxed 2D materials and their various properties. For more details,
           please see the related publications:
           <div style={{ margin: "10px" }}>

@@ -1,6 +1,6 @@
 # MC2D discover section
 
-Materials Cloud discover section for the Materials Cloud 2D crystals database (MC2D).
+Materials Cloud discover section for the Materials Cloud Two-Dimensional Structure Database (MC2D).
 
 ## Development
 
