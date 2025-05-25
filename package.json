@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bands-visualiser": "file:bands-visualiser-0.0.1.tgz",
     "better-react-mathjax": "^2.0.3",
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.1",
