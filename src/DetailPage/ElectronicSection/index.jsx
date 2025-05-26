@@ -7,7 +7,6 @@ import { MCInfoBox } from "../components/MCInfoBox";
 import { Container, Row, Col } from "react-bootstrap";
 
 //import BandsVisualizer from "mc-react-bands";
-import { BandsVisualiser } from "bands-visualiser";
 
 import { ExploreButton } from "mc-react-library";
 
@@ -15,6 +14,7 @@ import { loadAiidaBands } from "../../common/restApiUtils";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
+import { getXYData } from "bands-visualiser";
 import * as math from "mathjs";
 
 import { formatAiidaProp } from "../utils";
@@ -29,11 +29,15 @@ function shiftBands(bandsData, shift) {
   });
 }
 
-function ElectronicInfoBox({ electronicData, metadata }) {
+function ElectronicInfoBox({ electronicData, metadata, cbm = 0, vbm = 0 }) {
   let magStateStr = electronicData.magnetic_state;
   if (magStateStr == null) {
     magStateStr = "non-magnetic calculation;  magnetic state untested";
   }
+
+  console.log("CBM and VBM data:");
+  console.log(cbm);
+  console.log(vbm);
 
   return (
     <MCInfoBox style={{ height: "200px" }}>
@@ -41,6 +45,16 @@ function ElectronicInfoBox({ electronicData, metadata }) {
         <b>General info</b>
         <ul className="no-bullets">
           <li>Band gap: {formatAiidaProp(electronicData.band_gap, "eV")}</li>
+          {cbm?.value != null && vbm?.value != null && (
+            <>
+              <li>
+                CBM: {cbm.value.toFixed(3)} eV at k = {cbm.x.toFixed(3)}
+              </li>
+              <li>
+                VBM: {vbm.value.toFixed(3)} eV at k = {vbm.x.toFixed(3)}
+              </li>
+            </>
+          )}
           <li>Magnetic state: {magStateStr}</li>
           <li>
             Total magnetization:{" "}
@@ -60,26 +74,64 @@ function ElectronicInfoBox({ electronicData, metadata }) {
   );
 }
 
-const BandComponent = ({ bandsData, style, yRange = [-6.4, +6.4] }) => {
+//method to calculate the position of CBM and VBM
+function calculateBMs(bandsData) {
+  const allPoints = [];
+
+  bandsData.paths.forEach((obj) => {
+    const { x, values } = obj;
+    values.forEach((band) => {
+      band.forEach((val, idx) => {
+        allPoints.push({ x: x[idx], value: val });
+      });
+    });
+  });
+
+  const positivePoints = allPoints.filter((p) => p.value > 0);
+  const negativePoints = allPoints.filter((p) => p.value < 0);
+
+  const cbmPoint = positivePoints.reduce(
+    (minPoint, p) => (p.value < minPoint.value ? p : minPoint),
+    positivePoints[0],
+  );
+
+  const vbmPoint = negativePoints.reduce(
+    (maxPoint, p) => (p.value > maxPoint.value ? p : maxPoint),
+    negativePoints[0],
+  );
+
+  return { cbm: cbmPoint, vbm: vbmPoint };
+}
+
+// Lazy loading BandComponent.
+const BandComponent = ({
+  bandsData,
+  yRange = [-6.4, 6.4],
+  customTraces,
+  style,
+}) => {
   const containerRef = useRef(null);
+
+  console.log("custom traces", customTraces);
 
   useEffect(() => {
     if (!containerRef.current || !bandsData) return;
-
-    const bandsDataArray = [
-      {
-        bandsData: bandsData,
-        traceFormat: {
-          // we adjust width and color
-          showlegend: false,
-          line: { width: 2.0, color: "#636EFA" },
+    import("bands-visualiser").then(({ BandsVisualiser }) => {
+      const bandsDataArray = [
+        {
+          bandsData,
+          traceFormat: {
+            showlegend: false,
+            line: { width: 2.0, color: "#636EFA" },
+          },
         },
-      },
-    ];
+      ];
 
-    BandsVisualiser(containerRef.current, {
-      bandsDataArray,
-      settings: { yaxis: { range: yRange } },
+      BandsVisualiser(containerRef.current, {
+        bandsDataArray,
+        settings: { yaxis: { range: yRange } },
+        customTraces: customTraces || [],
+      });
     });
   }, [bandsData]);
 
@@ -90,6 +142,8 @@ const ElectronicSection = ({ loadedData }) => {
   const electronicData = loadedData.details.electronic;
   const [bandsData, setBandsData] = useState(null);
   const [loadingBands, setLoadingBands] = useState(true);
+  const [cbm, setCbm] = useState(null);
+  const [vbm, setVbm] = useState(null);
 
   const bandsAvailable =
     electronicData.bands_uuid != null &&
@@ -114,6 +168,13 @@ const ElectronicSection = ({ loadedData }) => {
 
     loadAiidaBands(electronicData.bands_uuid).then((bands) => {
       shiftBands(bands, bandShift); //shift before passing
+
+      if (electronicData.band_gap.value > 0) {
+        const { cbm: cbmPoint, vbm: vbmPoint } = calculateBMs(bands);
+        setCbm(cbmPoint);
+        setVbm(vbmPoint);
+      }
+
       setBandsData(bands);
       setLoadingBands(false);
     });
@@ -154,6 +215,8 @@ const ElectronicSection = ({ loadedData }) => {
               <ElectronicInfoBox
                 electronicData={electronicData}
                 metadata={loadedData.metadata}
+                cbm={cbm}
+                vbm={vbm}
               />
             </div>
           </Col>

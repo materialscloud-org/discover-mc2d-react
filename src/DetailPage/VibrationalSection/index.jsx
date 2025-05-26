@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { McloudSpinner, ExploreButton } from "mc-react-library";
 import { Container, Row, Col } from "react-bootstrap";
 
 import { loadAiidaBands, loadPhononVis } from "../../common/restApiUtils";
 import { EXPLORE_URL } from "../../common/restApiUtils";
 
-import { BandsVisualiser } from "bands-visualiser"; // <- Your new npm package
-import PhononVisualizer from "mc-react-phonon-visualizer";
+//import PhononVisualizer from "mc-react-phonon-visualizer";
+
+// Lazy load of PhononVis seems to improve performance on bad networks.
+// It might be worth implmenting this on the component level?
+const LazyPhononVisualizer = lazy(() => import("mc-react-phonon-visualizer"));
 
 // Component that wraps the BandsVisualiser into a React component
 const BandComponent = ({ bandsData, style }) => {
@@ -14,20 +17,21 @@ const BandComponent = ({ bandsData, style }) => {
 
   useEffect(() => {
     if (!containerRef.current || !bandsData) return;
-
-    const bandsDataArray = [
-      {
-        bandsData: bandsData,
-        traceFormat: {
-          showlegend: false,
-          line: { width: 2.0, color: "#636EFA" },
+    import("bands-visualiser").then(({ BandsVisualiser }) => {
+      const bandsDataArray = [
+        {
+          bandsData,
+          traceFormat: {
+            showlegend: false,
+            line: { width: 2.0, color: "#636EFA" },
+          },
         },
-      },
-    ];
+      ];
 
-    BandsVisualiser(containerRef.current, {
-      bandsDataArray,
-      settings: { yaxis: { title: { text: "Phonon bands [Thz]" } } },
+      BandsVisualiser(containerRef.current, {
+        bandsDataArray,
+        settings: { yaxis: { title: { text: "Phonon bands [Thz]" } } },
+      });
     });
   }, [bandsData]);
 
@@ -97,9 +101,13 @@ const VibrationalSection = ({ loadedData, params }) => {
               <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
             </div>
           </div>
-          <PhononVisualizer
-            props={{ title: "Phonon visualizer", ...phononVisData }}
-          />
+          <div style={{ height: "500px" }}>
+            <Suspense fallback={<McloudSpinner />}>
+              <LazyPhononVisualizer
+                props={{ title: "Phonon visualizer", ...phononVisData }}
+              />
+            </Suspense>
+          </div>
         </div>
       )}
     </div>
