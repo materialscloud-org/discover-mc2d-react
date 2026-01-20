@@ -8,7 +8,7 @@ import "./restapiText.css";
 
 const DOCS_URL = `${MC_REST_API_URL_BASE}docs`;
 const INDEX_URL = `${MC_REST_API_URL}/overview`;
-const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/base/mc2d-1`;
+const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/core_base/mc2d-1`;
 
 export const restapiText = (
   <div className="restapi-text-container">
