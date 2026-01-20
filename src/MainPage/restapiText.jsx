@@ -52,29 +52,23 @@ export const restapiText = (
     <div className="restapi-h">2. OPTIMADE REST API</div>
     <div>
       The MC2D database can also be accessed via an API following the{" "}
-      <a href="https://www.optimade.org/optimade" target="_blank">
+      <a
+        href="https://www.optimade.org/optimade"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         OPTIMADE specification
       </a>
-      . This currently only includes the crystal structures and no properties or
-      provenance information is provided. Relevant endpoints are
-      <ul>
-        <li>
-          <a
-            href="https://aiida.materialscloud.org/mc2d/optimade/v1/info"
-            target="_blank"
-          >
-            https://aiida.materialscloud.org/mc2d/optimade/v1/info
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://aiida.materialscloud.org/mc2d/optimade/v1/structures"
-            target="_blank"
-          >
-            https://aiida.materialscloud.org/mc2d/optimade/v1/structures
-          </a>
-        </li>
-      </ul>
+      . This currently includes the crystal structures and some properties but
+      no provenance information is provided. For the exact endpoints, see the{" "}
+      <a
+        href="https://materialscloud.org/optimade"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Materials Cloud OPTIMADE API page
+      </a>
+      .
     </div>
   </div>
 );
