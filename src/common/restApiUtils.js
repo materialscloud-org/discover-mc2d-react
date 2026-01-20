@@ -3,13 +3,13 @@
 // Define all functions for api calls here.
 
 // By default, use development API URLS
-let mcRestApiUrl = "https://api.dev.materialscloud.org/";
+let mcRestApiUrl = "https://mcxd-api.dev.materialscloud.org/";
 let aiidaRestBaseUrl = "https://aiida.dev.materialscloud.org";
-let exploreBaseUrl = "https://www.dev.materialscloud.org/explore/";
+let exploreBaseUrl = "https://www.materialscloud.dev/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
-  mcRestApiUrl = "https://api.materialscloud.org/";
+  mcRestApiUrl = "https://mcxd-api.materialscloud.org/";
   aiidaRestBaseUrl = "https://aiida.materialscloud.org";
   exploreBaseUrl = "https://www.materialscloud.org/explore/";
 }
@@ -50,7 +50,7 @@ export async function loadMetadata() {
 }
 
 export async function loadDetails(id) {
-  let endpoint = `${MC_REST_API_URL}/base/${id}`;
+  let endpoint = `${MC_REST_API_URL}/core_base/${id}`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     const json = await response.json();
@@ -95,7 +95,7 @@ export async function loadAiidaBands(uuid) {
 }
 
 export async function loadPhononVis(id) {
-  let endpoint = `${MC_REST_API_URL}/phonon-vis/${id}`;
+  let endpoint = `${MC_REST_API_URL}/core_phonon-vis/${id}`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     if (!response.ok) {
@@ -110,7 +110,7 @@ export async function loadPhononVis(id) {
 }
 
 export async function loadStructureUuids() {
-  let endpoint = `${MC_REST_API_URL}/structure-uuids`;
+  let endpoint = `${MC_REST_API_URL}/core_structure-uuids`;
   try {
     const response = await fetch(endpoint, { method: "get" });
     if (!response.ok) {
