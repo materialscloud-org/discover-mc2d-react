@@ -1,30 +1,50 @@
-import React, { useState, useEffect } from "react";
-
-import { McloudSpinner } from "mc-react-library";
-
-import { MCInfoBox } from "../components/MCInfoBox";
-
+import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
+import { McloudSpinner, ExploreButton } from "mc-react-library";
 import { Container, Row, Col } from "react-bootstrap";
 
-import BandsVisualizer from "mc-react-bands";
-
-import { ExploreButton } from "mc-react-library";
-
 import { loadAiidaBands, loadPhononVis } from "../../common/restApiUtils";
+import { EXPLORE_URL } from "../../common/restApiUtils";
 
-import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
+//import PhononVisualizer from "mc-react-phonon-visualizer";
 
-import PhononVisualizer from "mc-react-phonon-visualizer";
+// Lazy load of PhononVis seems to improve performance on bad networks.
+// It might be worth implmenting this on the component level?
+const LazyPhononVisualizer = lazy(() => import("mc-react-phonon-visualizer"));
 
-const VibrationalSection = (props) => {
+// Component that wraps the BandsVisualiser into a React component
+const BandComponent = ({ bandsData, style }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !bandsData) return;
+    import("bands-visualiser").then(({ BandsVisualiser }) => {
+      const bandsDataArray = [
+        {
+          bandsData,
+          traceFormat: {
+            showlegend: false,
+            line: { width: 2.0, color: "#636EFA" },
+          },
+        },
+      ];
+
+      BandsVisualiser(containerRef.current, {
+        bandsDataArray,
+        settings: { yaxis: { title: { text: "Phonon bands [Thz]" } } },
+      });
+    });
+  }, [bandsData]);
+
+  return <div ref={containerRef} style={style} />;
+};
+
+const VibrationalSection = ({ loadedData, params }) => {
   const [bandsData, setBandsData] = useState(null);
   const [loadingBands, setLoadingBands] = useState(true);
   const [phononVisData, setPhononVisData] = useState(null);
 
-  let vibrationalData = props.loadedData.details.vibrational;
-  console.log("vibrationalData", vibrationalData);
-
-  let bandsUuid = vibrationalData.phonon_bands_uuid;
+  const vibrationalData = loadedData.details.vibrational;
+  const bandsUuid = vibrationalData.phonon_bands_uuid;
 
   useEffect(() => {
     setBandsData(null);
@@ -37,59 +57,18 @@ const VibrationalSection = (props) => {
       setLoadingBands(false);
     }
 
-    loadPhononVis(props.params.id).then((data) => {
+    loadPhononVis(params.id).then((data) => {
       setPhononVisData(data);
       console.log("Phonon visualizer data", data);
     });
-  }, []);
+  }, [bandsUuid, params.id]);
 
-  let bandsAvailable = bandsData != null;
-  let bandsJsx = "";
-  if (bandsAvailable) {
-    bandsJsx = (
-      <Row>
-        <Col className="flex-column">
-          <div className="subsection-title">
-            Phonon band structure{" "}
-            <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
-          </div>
-          <BandsVisualizer
-            bandsDataList={[bandsData]}
-            // energyRange={[-5.0, 5.0]}
-            bandsColorInfo={["#3560A0"]}
-            formatSettings={{
-              bandsYlabel: "Phonon bands (THz)",
-            }}
-          />
-        </Col>
-        <Col className="flex-column"></Col>
-      </Row>
-    );
-  }
-
-  let phononVisAvailable = phononVisData != null;
-  let phononVisJsx = "";
-  if (phononVisAvailable) {
-    // NOTE: The PhononVisualizer plotly clicking doesn't seem to work
-    // inside bootstrap <Container>! Keep it outside.
-    phononVisJsx = (
-      <div>
-        <div style={{ margin: "30px 0px 5px 12px" }}>
-          <div className="subsection-title">
-            Interactive phonon visualizer{" "}
-            <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
-          </div>
-        </div>
-        <PhononVisualizer
-          props={{ title: "Phonon visualizer", ...phononVisData }}
-        />
-      </div>
-    );
-  }
+  const bandsAvailable = bandsData != null;
 
   return (
     <div>
       <div className="section-heading">Vibrational properties</div>
+
       <Container fluid className="section-container">
         {loadingBands ? (
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
@@ -98,10 +77,39 @@ const VibrationalSection = (props) => {
         ) : !bandsAvailable ? (
           <span>Vibrational properties not available for this structure.</span>
         ) : (
-          <>{bandsJsx}</>
+          <Row>
+            <Col className="flex-column">
+              <div className="subsection-title">
+                Phonon band structure{" "}
+                <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
+              </div>
+              <BandComponent
+                bandsData={bandsData}
+                style={{ height: "500px" }}
+              />
+            </Col>
+            <Col className="flex-column"></Col>
+          </Row>
         )}
       </Container>
-      {phononVisJsx}
+
+      {phononVisData && (
+        <div>
+          <div style={{ margin: "30px 0px 5px 12px" }}>
+            <div className="subsection-title">
+              Interactive phonon visualizer{" "}
+              <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
+            </div>
+          </div>
+          <div style={{ height: "500px" }}>
+            <Suspense fallback={<McloudSpinner />}>
+              <LazyPhononVisualizer
+                props={{ title: "Phonon visualizer", ...phononVisData }}
+              />
+            </Suspense>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
