@@ -1,3 +1,8 @@
+> [!WARNING]
+> This repository is **archived** and no longer maintained.
+> 
+> It has been migrated to **https://github.com/materialscloud-org/discover-mcxd-frontend**.
+
 # MC2D discover section
 
 Materials Cloud discover section for the Materials Cloud Two-Dimensional Structure Database (MC2D).
